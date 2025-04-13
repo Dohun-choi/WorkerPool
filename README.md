@@ -1,24 +1,41 @@
-# Simple WorkerPool
+# work-queue-pool
 
 > A simple and efficient worker pool implementation for JavaScript/TypeScript projects.
+
 > 자바스크립트/타입스크립트 프로젝트를 위한 간단하고 효율적인 워커 풀 구현.
 
-🧠 Workload-aware auto scaling:
+🧠 **Workload-aware auto scaling**
+
 Automatically adjusts the number of workers based on the current task queue status, allowing efficient use of system resources. (Minimum and maximum pool size configurable)
-🧾 Direct queue management:
+
+🧾 **Direct queue management**
+
 Uses a Map-based queue where each task is identified by a unique ID, making it possible to track or remove individual tasks when needed.
-🛠️ Customizable task preprocessing:
+
+🛠️ **Customizable task preprocessing**
+
 Supports both synchronous and asynchronous preprocessing of task data via taskTransform, enabling flexible handling of complex data structures before they're sent to workers.
-📦 Automatic handling of transferable objects:
+
+📦 **Automatic handling of transferable objects**
+
 Automatically detects transferable objects like ArrayBuffer, ImageBitmap, and OffscreenCanvas, allowing zero-copy transfer to workers for optimal performance.
 
-🧠 워크로드 기반 자동 크기 조절:
+---
+
+🧠 **워크로드 기반 자동 크기 조절**
+
 현재 작업 큐의 상태에 따라 워커 수를 자동으로 조절하여 리소스를 효율적으로 사용합니다. (최소/최대 풀 사이즈 지정 가능)
-🧾 작업 큐 직접 관리:
+
+🧾 **작업 큐 직접 관리**
+
 Map 기반 큐를 사용하여 각 작업을 고유 ID로 식별하고, 필요 시 개별 작업을 제거하거나 추적할 수 있습니다.
-🛠️ 전처리 커스터마이징:
+
+🛠️ **전처리 커스터마이징**
+
 워커에 전달할 데이터를 taskTransform을 통해 동기/비동기적으로 전처리할 수 있어, 복잡한 데이터 가공도 유연하게 처리할 수 있습니다.
-📦 Transferable 객체 자동 처리:
+
+📦 **Transferable 객체 자동 처리**
+
 ArrayBuffer, ImageBitmap, OffscreenCanvas 등을 자동으로 식별하여 메모리 복사 없이 워커에 전달합니다.
 
 ## 📌 Introduction
@@ -53,11 +70,11 @@ npm install simple-workerpool
 import { WorkerPool } from "simple-workerpool";
 
 const pool = new WorkerPool({
-  workerFactory: () => new Worker("worker.js"), // Worker 생성 함수
-  minPoolSize: 2, // 최소 풀 크기
-  maxPoolSize: 10, // 최대 풀 크기
+  workerFactory: () => new Worker("yourWorker.js"),
+  minPoolSize: 2,
+  maxPoolSize: 10,
   taskTransform: async (task) => {
-    // 필요에 따라 입력 데이터를 변환하는 함수
+    // A function to transform input data as needed - Optional
     return task.payload;
   },
 });

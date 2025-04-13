@@ -1,15 +1,15 @@
 interface WorkerPoolOptions<T = unknown, U = unknown, V = T> {
   /**
-   * Worker 인스턴스를 생성하여 반환하는 팩토리 함수.
-   * Vite와 같은 번들러 환경에서 Worker를 올바르게 생성할 수 있도록 도와줍니다.
+   * A factory function that creates and returns a Worker instance.
+   * Helps to correctly create Workers in bundler environments like Vite.
    */
   workerFactory: () => Worker;
-  minPoolSize?: number; // 최소 워커 풀 크기 (기본값: 2)
-  maxPoolSize?: number; // 최대 워커 풀 크기 (기본값: 10)
+  minPoolSize?: number;
+  maxPoolSize?: number;
   /**
-   * 작업 데이터를 가공하는 함수.
-   * 입력 Task의 payload (타입 T)를 받아 실제 워커에 전달할 데이터 (타입 V)를 반환합니다.
-   * 이 함수는 동기 또는 비동기일 수 있습니다.
+   * A function that transforms task data.
+   * Takes the input Task's payload (type T) and returns data (type V) to be sent to the worker.
+   * This function can be synchronous or asynchronous.
    */
   taskTransform?: (task: Task<T, U>) => V | Promise<V>;
 }
@@ -24,12 +24,12 @@ type Task<T, U> = {
 const CORE_COUNT = navigator.hardwareConcurrency || 4;
 
 /**
- * WorkerPool 클래스는 미리 생성한 Worker 인스턴스 풀을 관리하며,
- * 작업 요청이 들어오면 사용 가능한 워커에 작업을 할당하고,
- * 모든 워커가 바쁠 경우 작업을 Map에 저장합니다.
+ * The WorkerPool class manages a pool of pre-created Worker instances,
+ * assigns tasks to available workers when task requests come in,
+ * and stores tasks in a Map when all workers are busy.
  *
- * 풀 생성 시 옵션 객체를 통해 workerFactory, 최소/최대 풀 크기, taskTransform 함수를 받아 내부에서만 사용하며,
- * 작업 추가 및 완료 시 자동으로 풀 크기를 조절합니다.
+ * On pool creation, options like workerFactory, min/max pool sizes, and taskTransform functions
+ * are used internally, and the pool size is automatically adjusted when tasks are added or completed.
  */
 export class WorkerPool<T, U, V = T> {
   private pool: Worker[];
@@ -183,11 +183,11 @@ export class WorkerPool<T, U, V = T> {
   }
 
   /**
-   * 작업을 실행합니다.
-   * 사용 가능한 워커가 없으면 작업을 큐(Map)에 저장하고, 자동으로 풀 크기를 조절합니다.
-   * @param id 고유 작업 식별자.
-   * @param payload 워커에 전달할 원본 데이터 (타입 T).
-   * @returns 워커의 처리 결과를 반환하는 Promise (타입 U).
+   * Executes a task.
+   * If no available workers are found, the task is added to the queue (Map), and the pool size is automatically adjusted.
+   * @param id The unique task identifier.
+   * @param payload The original data (type T) to be sent to the worker.
+   * @returns A promise that returns the worker's result (type U).
    */
   public execute(payload: T, id: string = this.getUniqueId()): Promise<U> {
     return new Promise((resolve, reject) => {
@@ -205,17 +205,19 @@ export class WorkerPool<T, U, V = T> {
   private getUniqueId() {
     return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
   }
+
   /**
-   * 지정된 id를 이용해 큐에서 작업을 제거합니다.
-   * @param id 제거할 작업의 고유 식별자.
-   * @returns 제거 성공 여부.
+   * Removes a task from the queue using the specified id.
+   * It cannot remove tasks that are currently being executed.
+   * @param id The unique identifier of the task to remove.
+   * @returns A boolean indicating whether the removal was successful.
    */
   public removeTaskById(id: string): boolean {
     return this.queue.delete(id);
   }
 
   /**
-   * 워커 풀에 있는 모든 워커를 종료하고, 큐와 내부 상태를 초기화합니다.
+   * Terminates all workers in the pool and clears the queue and internal state.
    */
   public terminate() {
     this.pool.forEach((worker) => worker.terminate());

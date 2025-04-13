@@ -1,5 +1,5 @@
 {
-  "name": "simple-workerpool",
+  "name": "work-queue-pool",
   "version": "0.0.1",
   "description": "A dynamic Web Worker pool with auto-scaling, task queue management, and transferable support.",
   "keywords": [
