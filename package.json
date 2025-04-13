@@ -1,0 +1,26 @@
+{
+  "name": "simple-workerpool",
+  "version": "0.0.1",
+  "description": "A dynamic Web Worker pool with auto-scaling, task queue management, and transferable support.",
+  "keywords": [
+    "web-worker",
+    "worker-pool",
+    "parallel-processing",
+    "typescript"
+  ],
+  "homepage": "https://github.com/Dohun-choi/WorkerPool#readme",
+  "bugs": {
+    "url": "https://github.com/Dohun-choi/WorkerPool/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dohun-choi/WorkerPool.git"
+  },
+  "license": "MIT",
+  "author": "dohun-choi",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  }
+}
